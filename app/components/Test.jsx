@@ -221,8 +221,6 @@ export default function Test() {
             const adjustedPackage = {}
             parcel.setKnown.forEach(x => adjustedPackage[x.id] = true)
             parcel.setUnknown.forEach(x => adjustedPackage[x.id] = false)
-            console.log('initial', initialPackage)
-            console.log('adjusted', adjustedPackage)
 
             if (session) {
 

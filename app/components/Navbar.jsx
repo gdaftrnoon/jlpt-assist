@@ -66,7 +66,7 @@ const Navbar = () => {
 
                                 <Box sx={{ display: { xs: 'none', md: 'flex', gap: 5 } }}>
                                     <Button onClick={() => redirect('/vocabulary')} variant='text' sx={{ color: 'white', fontWeight: '600' }}>Vocabulary</Button>
-                                    <Button onClick={() => redirect('/test')} variant='text' sx={{ color: 'white', fontWeight: '600' }}>Quiz</Button>
+                                    <Button onClick={() => redirect('/test')} variant='text' sx={{ color: 'white', fontWeight: '600' }}>Test</Button>
                                     <Button onClick={() => redirect('/review')} variant='text' sx={{ color: 'white', fontWeight: '600' }}>Review</Button>
                                 </Box>
 
@@ -96,20 +96,6 @@ const Navbar = () => {
                                             </Avatar>
                                             <Menu anchorEl={avatarAnchorEl} open={Boolean(avatarAnchorEl)} onClose={() => setAvatarAnchorEl(null)}>
                                                 <MenuItem onClick={() => signOutHelper()}>Logout</MenuItem>
-                                                <MenuItem onClick={() => {
-                                                    if (mode === 'light') {
-                                                        localStorage.setItem('mode', 'dark')
-                                                        window.dispatchEvent(new StorageEvent('storage', { key: 'mode', newValue: 'dark' }))
-                                                        setMode('dark')
-                                                    }
-                                                    else if (mode === 'dark') {
-                                                        localStorage.setItem('mode', 'light')
-                                                        window.dispatchEvent(new StorageEvent('storage', { key: 'mode', newValue: 'light' }))
-                                                        setMode('light')
-                                                    }
-                                                }}>
-                                                    {(mode === 'light') ? 'Dark Mode' : 'Light Mode'}
-                                                </MenuItem>
                                             </Menu>
                                         </>
                                         :
@@ -129,8 +115,22 @@ const Navbar = () => {
                                     onClose={() => setMobileAnchorEl(null)}
                                 >
                                     <MenuItem component={Link} href='/vocabulary' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Vocabulary</MenuItem>
-                                    <MenuItem component={Link} href='/test' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Quiz</MenuItem>
+                                    <MenuItem component={Link} href='/test' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Test</MenuItem>
                                     <MenuItem component={Link} href='/review' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Review</MenuItem>
+                                    <MenuItem onClick={() => {
+                                        if (mode === 'light') {
+                                            localStorage.setItem('mode', 'dark')
+                                            window.dispatchEvent(new StorageEvent('storage', { key: 'mode', newValue: 'dark' }))
+                                            setMode('dark')
+                                        }
+                                        else if (mode === 'dark') {
+                                            localStorage.setItem('mode', 'light')
+                                            window.dispatchEvent(new StorageEvent('storage', { key: 'mode', newValue: 'light' }))
+                                            setMode('light')
+                                        }
+                                    }}>
+                                        {(mode === 'light') ? 'Dark Mode' : 'Light Mode'}
+                                    </MenuItem>
                                 </Menu>
                             </Box>
                         </Box>
