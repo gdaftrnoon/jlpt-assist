@@ -4,6 +4,7 @@ import { ArticleOutlined, CheckBoxOutlineBlankRounded, DeleteForever, DeleteFore
 import { Alert, Box, Button, Card, CardContent, Checkbox, CircularProgress, Collapse, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemButton, ListItemText, Pagination, Skeleton, Table, TableBody, TableCell, TableContainer, TableRow, TextField, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react"
+import { useVocab } from "../VocabDataProvider";
 
 export default function VocabTable() {
 
@@ -13,7 +14,7 @@ export default function VocabTable() {
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.up('md'));
 
-    const [vocab, setVocab] = useState()
+    const [vocab, setVocab] = useState(useVocab())
 
     const flagA = useRef(false)
     const flagB = useRef(false)
@@ -40,20 +41,20 @@ export default function VocabTable() {
     const [untickAllSelect, openUntickAllSelect] = useState(false)
 
     // fetch all jlpt vocab data once on mount
-    useEffect(() => {
-        if (!flagA.current) {
-            fetch('/api/FetchJlpt')
-                .then(response => response.json())
-                .then(data => {
-                    setVocab(data.message)
-                    console.log('all vocab data', data.message)
-                })
-                .finally(
-                    flagA.current = true
-                )
-        }
+    // useEffect(() => {
+    //     if (!flagA.current) {
+    //         fetch('/api/FetchJlpt')
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 setVocab(data.message)
+    //                 console.log('all vocab data', data.message)
+    //             })
+    //             .finally(
+    //                 flagA.current = true
+    //             )
+    //     }
 
-    }, [])
+    // }, [])
 
     // show/hide intro dialog based on ls
     useEffect(() => {
