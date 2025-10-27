@@ -197,7 +197,7 @@ const Banner = () => {
 
                             {(userid) ?
                                 <Button
-                                    onClick={() => redirect('/vocab')}
+                                    onClick={() => redirect('/vocabulary')}
                                     variant="contained"
                                     size="small"
                                     startIcon={<SchoolOutlined />}
@@ -257,7 +257,7 @@ const Banner = () => {
 
                             <CardContent sx={{ paddingBottom: 0 }}>
                                 <Button
-                                    onClick={() => redirect('/vocab')}
+                                    onClick={() => redirect('/vocabulary')}
                                     variant="contained"
                                     color="error"
                                     size="small"
@@ -360,7 +360,7 @@ const Banner = () => {
 
                                 <CardContent sx={{ paddingBottom: 0 }}>
                                     <Button
-                                        onClick={() => redirect('/quiz')}
+                                        onClick={() => redirect('/test')}
                                         variant="contained"
                                         color="error"
                                         size="small"
