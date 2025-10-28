@@ -10,8 +10,16 @@ import {
   Alert,
 } from "@mui/material";
 import GoogleSignIn from "../serveraction";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 const LoginLogout = () => {
+
+  // getting user session if it exists
+  const { data: session, status } = useSession()
+  const userid = session?.user?.userId
+  const username = session?.user?.username
 
   const MobileLogin = () => (
 
@@ -59,9 +67,17 @@ const LoginLogout = () => {
 
   )
 
+  if (status === 'loading') {
+    return null
+  }
+
+  if (status === 'authenticated') {
+    redirect('/')
+  }
+
   return (
-      <MobileLogin />
-  );
-};
+    <MobileLogin />
+  )
+}
 
 export default LoginLogout;

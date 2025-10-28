@@ -3,11 +3,12 @@ import { Box, Button, Container, Dialog, DialogContent, DialogTitle, Grid, IconB
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useVocab } from "../VocabDataProvider";
+import { redirect } from "next/navigation";
 
 export default function ProfileComponent() {
 
     const { data: session, status } = useSession()
-    const userid = session?.user?.userId
+    const username = session?.user?.username
 
     const theme = useTheme()
     const matches = useMediaQuery(theme.breakpoints.up('md'))
@@ -92,7 +93,7 @@ export default function ProfileComponent() {
     }, [status])
 
     useEffect(() => {
-        if (session) {
+        if (session && username) {
             const userDetails = {
                 username: session?.user?.username,
                 createdAt: (session?.user?.createdAt).slice(0, 10)
@@ -101,8 +102,18 @@ export default function ProfileComponent() {
         }
     }, [session])
 
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            redirect('/')
+        }
+    }, [status, username])
+
     function capitalizeFirstLetter(val) {
         return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+    }
+
+    if (status === 'loading' || status === 'unauthenticated') {
+        return null
     }
 
     return (
@@ -265,20 +276,24 @@ export default function ProfileComponent() {
                                             {
                                                 (records) ?
                                                     level === 'all' ?
-                                                        `${Math.floor(
-                                                            (
-                                                                records.map(x => (x.correct)).flatMap(y => y).reduce((a, b) => a + b, 0) /
-                                                                records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
+                                                        records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0) === 0 ?
+                                                            '0%' :
+                                                            `${Math.floor(
+                                                                (
+                                                                    records.map(x => (x.correct)).flatMap(y => y).reduce((a, b) => a + b, 0) /
+                                                                    records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
 
-                                                            ) * 100
-                                                        )}%` :
-                                                        `${Math.floor(
-                                                            (
-                                                                records.filter(record => record.n_level === level).map(x => (x.correct)).flatMap(y => y).reduce((a, b) => a + b, 0) /
-                                                                records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
+                                                                ) * 100
+                                                            )}%` :
+                                                        records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0) === 0 ?
+                                                            '0%' :
+                                                            `${Math.floor(
+                                                                (
+                                                                    records.filter(record => record.n_level === level).map(x => (x.correct)).flatMap(y => y).reduce((a, b) => a + b, 0) /
+                                                                    records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
 
-                                                            ) * 100
-                                                        )}%`
+                                                                ) * 100
+                                                            )}%`
                                                     :
                                                     null
                                             }
@@ -417,7 +432,7 @@ export default function ProfileComponent() {
                                         {
                                             (records) ?
                                                 level === 'all' ?
-                                                    `${page + 1} | ${Math.ceil(records.length / 10)}` :
+                                                    `${records.length === 0 ? 0 : page + 1} | ${Math.ceil(records.length / 10)}` :
                                                     `${records.filter(record => record.n_level === level).length === 0 ? 0 : page + 1} | ${Math.ceil(records.filter(record => record.n_level === level).length / 10)}`
                                                 : null
                                         }

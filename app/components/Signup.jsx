@@ -3,16 +3,28 @@ import {
   Box,
   Button,
   Collapse,
+  Container,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from '@mui/material/Alert';
 import { redirect, useRouter } from 'next/navigation'
 import CircularProgress from '@mui/material/CircularProgress';
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const SignUp = () => {
+
+  async function signOutHelper() {
+    await signOut({ redirectTo: '/' })
+  }
+
+  // getting user session if it exists
+  const { data: session, status } = useSession()
+  const userid = session?.user?.userId
+  const sessionUsername = session?.user?.username
 
   function timeout(delay) {
     return new Promise(res => setTimeout(res, delay));
@@ -76,82 +88,110 @@ const SignUp = () => {
     }
   }
 
+  useEffect(() => {
+    if (status === 'authenticated' && sessionUsername) {
+      redirect('/')
+    }
+  }, [status, sessionUsername])
+
+  if (status === 'loading') {
+    return null
+  }
+
+  if (status === 'unauthenticated') {
+    return (
+      <Container sx={{display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>
+        <Typography sx={{mt:10}}>
+          You must be authenticated to access this page.
+        </Typography>
+        <Button sx={{mt:2}} onClick={() => redirect('/')}>
+          Return to homepage
+        </Button>
+      </Container>
+    )
+  }
+
   return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden'
+      }}
+    >
+
+      <Paper
+        elevation={3}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: 4,
+          width: '100%',
+          maxWidth: 400,
+          overflow: 'hidden',
+        }}
+      >
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Sign Up with Google
+        </Typography>
 
         <Box
+          component="form"
+          onSubmit={handleSubmit}
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100vh',
-            width: '100vw',
-            overflow: 'hidden',
-            backgroundColor: '#f5f5f5',
+            gap: 2,
+            width: '100%',
           }}
         >
 
-          <Paper
-            elevation={3}
+          <TextField placeholder="Enter username" id='username' value={username} onChange={(e) => setUsername(e.target.value)} required fullWidth autoFocus />
+          {loading ?
+            <Button variant="contained" fullWidth sx={{ mt: 1 }}>
+              <CircularProgress size="25px" color="inherit" />
+            </Button>
+            :
+            <Button color="error" type="submit" variant="contained" fullWidth sx={{ mt: 1 }}>
+              Create Account
+            </Button>
+          }
+          <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
-              padding: 4,
-              width: '100%',
-              maxWidth: 400,
-              overflow: 'hidden',
+              fontSize: '0.85rem',
+              mt: 1,
             }}
           >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Sign Up with Google
-            </Typography>
+            <Typography>Changed your mind?</Typography>
+          </Box>
+          <Button
+            color="error"
+            variant="outlined"
+            onClick={() => {
+              signOutHelper()
+            }}
+            fullWidth
+          >
+            Go Back
+          </Button>
+        </Box>
+      </Paper>
+      <Collapse in={alertMsgVisible} sx={{ marginTop: '20px' }}>
+        <Alert severity={alertSeverity}>
+          {alertMsgBody}
+        </Alert>
+      </Collapse>
+    </Box>
+  )
 
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                width: '100%',
-              }}
-            >
-
-              <TextField placeholder="Enter username" id='username' value={username} onChange={(e) => setUsername(e.target.value)} required fullWidth autoFocus />
-              {loading ?
-                <Button variant="contained" fullWidth sx={{ mt: 1 }}>
-                  <CircularProgress size="25px" color="inherit" />
-                </Button>
-                :
-                <Button color="error" type="submit" variant="contained" fullWidth sx={{ mt: 1 }}>
-                  Create Account
-                </Button>
-              }
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontSize: '0.85rem',
-                  mt: 1,
-                }}
-              >
-                <Typography>Already have an account?</Typography>
-              </Box>
-              <Button color="error" variant="outlined" onClick={() => { redirect('/login') }} fullWidth>
-                Login
-              </Button>
-            </Box>
-          </Paper>
-          <Collapse in={alertMsgVisible} sx={{ marginTop: '20px' }}>
-            <Alert severity={alertSeverity}>
-              {alertMsgBody}
-            </Alert>
-          </Collapse>
-        </Box >
-
-  );
-};
+}
 
 export default SignUp;

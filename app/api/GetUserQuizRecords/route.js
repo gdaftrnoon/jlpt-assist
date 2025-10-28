@@ -13,7 +13,7 @@ export async function POST(request) {
     const userid = sessionObj?.user?.userId
 
     if (!userid) {
-        return
+        return NextResponse.json({ message: 'Not an authenticated user' }, { status: 429 })
     }
 
     if (requestMsg.RequestType === 'meta') {

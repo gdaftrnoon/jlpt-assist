@@ -11,15 +11,18 @@ import { redirect } from 'next/navigation';
 
 const Navbar = () => {
 
-    const [mode, setMode] = useState('light')
-
     const { data: session, status } = useSession()
-    const userid = session?.user?.userId
     const username = session?.user?.username
 
     async function signOutHelper() {
         await signOut({ redirectTo: '/' })
     }
+
+    useEffect(() => {
+        if (status === 'authenticated' && !username) {
+            redirect('/register')
+        }
+    }, [session, username])
 
     useEffect(() => {
         if (!localStorage.getItem("pullFromDb")) {
@@ -107,9 +110,7 @@ const Navbar = () => {
     }
 
     return (
-
         <MobileNavbar />
-
     )
 }
 

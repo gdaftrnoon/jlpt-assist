@@ -1,18 +1,27 @@
 "use client"
-import { Box, Button, Card, CardContent, Container, Divider, Grid, IconButton, Paper, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Container, Divider, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import { ArrowLeft, ArrowRight, CancelOutlined, Check, Clear, CloudUploadOutlined, DoneOutline, InfoOutlineSharp, InsertChartOutlinedOutlined, KeyboardArrowUp, MyLocationOutlined, PersonAddAlt1, Quiz, QuizOutlined, SchoolOutlined, Visibility } from '@mui/icons-material';
+import { ArrowLeft, ArrowRight, CancelOutlined, Check, Clear, CloudUploadOutlined, DoneOutline, InfoOutlineSharp, InsertChartOutlinedOutlined, KeyboardArrowUp, MoneyOff, MyLocationOutlined, PersonAddAlt1, Quiz, QuizOutlined, SchoolOutlined, SunnySnowing, Visibility } from '@mui/icons-material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from "@mui/material/Checkbox";
 import { redirect } from 'next/navigation';
 import { useRef } from "react";
 import { useSession } from 'next-auth/react';
+import { useVocab } from '../VocabDataProvider';
 
 const Banner = () => {
 
     const MobileHomepage = () => {
+
+        const [vocab, setVocab] = useState(useVocab())
+        const flagB = useRef(false)
+        const [level, setLevel] = useState('all')
+        const [userKnownWordIds, setUserKnownWordIds] = useState([])
+
+        const theme = useTheme()
+        const matches = useMediaQuery(theme.breakpoints.up('md'))
 
         // getting user session if it exists
         const { data: session, status } = useSession()
@@ -150,6 +159,21 @@ const Banner = () => {
 
         }, [exampleWords])
 
+        // fetch user known word ids once status is verified
+        useEffect(() => {
+            if (status === 'authenticated' && username && !flagB.current) {
+                fetch('/api/GetUserVocab')
+                    .then(response => response.json())
+                    .then(data => {
+                        setUserKnownWordIds(data.message.map(x => x.word_id))
+                        console.log('all user known word ids', data.message.map(x => x.word_id))
+                    })
+                    .finally(
+                        flagB.current = true
+                    )
+            }
+        }, [status])
+
         // for the more info button
         const moreInfo = useRef(null)
 
@@ -165,69 +189,59 @@ const Banner = () => {
                     }}>
 
                     <Box sx={{
-                        width: { xs: '100%', md: '50%' }
+                        width: { xs: '100%', md: '100%' },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                     }}>
 
+                        {/* masthead */}
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            mt: 6,
-                            mb: 3
+                            mt: { md: 15, xs: 10 },
+                            mb: 5
                         }}>
 
-                            {(status) === 'authenticated' ?
-                                < Typography gutterBottom sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, minWidth: { md: 416 }, textAlign: 'center' }}>
-                                    Welcome back, {username}!
-                                </Typography> :
-                                < Typography gutterBottom sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, minWidth: { md: 416 } }}>
-                                    「日本語能力試験アシスト」
-                                </Typography>
 
-                            }
+                            < Typography gutterBottom variant={matches ? 'h2' : 'h5'} sx={{ fontWeight: '600' }}>
+                                「日本語能力試験アシスト」
+                            </Typography>
 
-                            <Typography sx={{ textAlign: 'center' }}>
-                                Master Japanese vocabulary through targeted practice and spaced repetition.
+                            <Typography textAlign="center" variant={matches ? 'h5' : 'subtitle1'}>
+                                Master Japanese vocabulary through targeted practice and repetition.
                             </Typography>
 
                         </Box>
 
+                        {/* Buttons */}
                         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 6 }}>
 
-                            {(userid) ?
-                                <Button
-                                    onClick={() => redirect('/vocabulary')}
-                                    variant="contained"
-                                    size="small"
-                                    startIcon={<SchoolOutlined />}
-                                    color='error'
-                                    sx={{
-                                        fontSize: '0.95rem',
-                                        borderRadius: '12px',
-                                        px: 2,
-                                        py: 1
-                                    }}
-                                >
-                                    Start Learning
-                                </Button> :
-                                <Button
-                                    onClick={() => redirect('/login')}
-                                    variant="contained"
-                                    size="small"
-                                    startIcon={<PersonAddAlt1 />}
-                                    color='error'
-                                    sx={{
-                                        fontSize: '0.95rem',
-                                        borderRadius: '12px',
-                                        px: 2,
-                                        py: 1
-                                    }}
-                                >
-                                    Register
-                                </Button>
-                            }
+                            {/* get started */}
+                            <Button
+                                onClick={() => {
+                                    session ?
+                                        redirect('/vocabulary') :
+                                        redirect('/login')
+                                }}
+                                variant="contained"
+                                size={matches ? 'large' : 'medium'}
+                                startIcon={<SchoolOutlined />}
+                                color='error'
+                                sx={{
+                                    fontSize: '0.95rem',
+                                    borderRadius: '12px',
+                                    px: 2,
+                                    py: 1
+                                }}
+                            >
+                                Get Started
+                            </Button>
 
+                            {/* learn more */}
                             <Button
                                 onClick={() =>
                                     window.scrollTo({
@@ -236,7 +250,7 @@ const Banner = () => {
                                     })
                                 }
                                 variant="outlined"
-                                size="small"
+                                size={matches ? 'large' : 'medium'}
                                 startIcon={<InfoOutlineSharp />}
                                 color='error'
                                 sx={{
@@ -251,9 +265,48 @@ const Banner = () => {
 
                         </Box>
 
+                        {/* summary table */}
+                        <Paper sx={{ py: 0.2, px: 0.1, borderRadius: '16px', mb: 6, width: { md: '60%', xs: '100%' } }}>
+                            <TableContainer sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 1.5, mb: 1.5 }}>
+                                <Table sx={{ width: { xs: '100%', md: '100%' } }}>
+                                    <TableHead>
+                                        <TableRow>
+                                            {
+                                                ['Level', 'Total', 'Known', 'Completion'].map((x, index) => (
+                                                    <TableCell sx={{ textAlign: 'center', padding: 1, fontWeight: '600', fontSize: { xs: '1rem', md: '1.2rem' } }} key={index}>
+                                                        {x}
+                                                    </TableCell>
+                                                ))
+                                            }
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Object.keys(vocab).map((x, index) => (
+                                            <TableRow selected={x === level} onClick={() => setLevel(x)} key={index}>
+                                                <TableCell sx={{ textAlign: 'center', padding: 1, fontWeight: '600', fontSize: { xs: '1rem', md: '1.2rem' } }}>
+                                                    {x.toUpperCase()}
+                                                </TableCell>
+                                                <TableCell sx={{ textAlign: 'center', padding: 1, fontWeight: '600', fontSize: { xs: '1rem', md: '1.2rem' } }}>
+                                                    {vocab[x].length}
+                                                </TableCell>
+                                                <TableCell sx={{ textAlign: 'center', padding: 1, fontWeight: '600', fontSize: { xs: '1rem', md: '1.2rem' } }}>
+                                                    {vocab[x].filter(y => userKnownWordIds.includes(y.id)).length}
+                                                </TableCell>
+                                                <TableCell sx={{ textAlign: 'center', padding: 1, fontWeight: '600', fontSize: { xs: '1rem', md: '1.2rem' } }}>
+                                                    {`${Math.floor(
+                                                        (vocab[x].filter(y => userKnownWordIds.includes(y.id)).length /
+                                                            vocab[x].length) * 100
+                                                    )}%`}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
 
                         {/* card explaining the vocab table */}
-                        <Card sx={{ display: 'flex', flexDirection: 'column', borderRadius: '16px' }}>
+                        <Card sx={{ display: 'flex', flexDirection: 'column', borderRadius: '16px', width: { md: '60%', xs: '100%' } }}>
 
                             <CardContent sx={{ paddingBottom: 0 }}>
                                 <Button
@@ -355,7 +408,7 @@ const Banner = () => {
                         </Card>
 
                         {/* card explaining the quiz table */}
-                        <Box sx={{ minHeight: { md: 636, xs: 684 } }}>
+                        <Box sx={{ minHeight: { md: 636, xs: 684 }, width: { md: '60%', xs: '100%' } }}>
                             <Card sx={{ display: 'flex', flexDirection: 'column', mt: 3, borderRadius: '16px' }}>
 
                                 <CardContent sx={{ paddingBottom: 0 }}>
@@ -502,32 +555,38 @@ const Banner = () => {
                 <Box
                     ref={moreInfo}
                     sx={{
+                        background: `repeating-linear-gradient(
+                        -55deg,
+                        rgba(34, 34, 34, 0.04),
+                        rgba(34, 34, 34, 0.04) 10px,
+                        rgba(51, 51, 51, 0.04), 
+                        rgba(51, 51, 51, 0.04) 20px
+                        )`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexDirection: 'column',
                         width: '100%',
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
                         mt: 5,
-                        pt: 10,
-                        pb: 15
+                        pt: 5,
+                        pb: { md: 15, xs: 5 }
                     }}>
                     <Box sx={{ mb: 5, width: '100%', textAlign: 'center' }}>
-                        <Typography gutterBottom sx={{ fontSize: '2rem' }}>Core Features</Typography>
-                        <Typography gutterBottom sx={{ fontSize: '1.2rem', color: 'grey' }}>Modern features, simple design philosophy</Typography>
+                        <Typography variant={matches ? 'h2' : 'h5'} gutterBottom sx={{}}>Core Features</Typography>
+                        <Typography variant={matches ? 'h4' : 'h5'} gutterBottom sx={{ color: 'grey' }}>Modern features, simple design philosophy</Typography>
                     </Box>
 
-                    <Box sx={{ width: { xs: '90%', md: '35%' } }}>
+                    <Box sx={{ width: { xs: '90%', md: '50%' } }}>
 
                         <Grid container spacing={2} sx={{}}>
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <Paper sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: 1, padding: 1 }}>
-                                        <MyLocationOutlined color='error' fontSize='small' sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
-                                        <Typography sx={{ fontWeight: '600' }} variant='subtitle1'>Targeted Study</Typography>
+                                        <MyLocationOutlined color='error' fontSize={'large'} sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
+                                        <Typography sx={{ fontWeight: '600' }} variant='h6'>Targeted Study</Typography>
                                     </Box>
                                     <Box sx={{ padding: 1 }}>
-                                        <Typography sx={{ color: 'grey' }} variant='subtitle2'>Tailor your learning to specific N-Levels, building a solid foundation for the next exam.</Typography>
+                                        <Typography sx={{ color: 'grey' }} variant='subtitle1'>Tailor your learning to specific N-Levels, building a solid foundation for the next exam.</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
@@ -535,11 +594,11 @@ const Banner = () => {
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <Paper sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: 1, padding: 1 }}>
-                                        <QuizOutlined color='error' fontSize='small' sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
-                                        <Typography sx={{ fontWeight: '600' }} variant='subtitle1'>Customisable Tests</Typography>
+                                        <QuizOutlined color='error' fontSize={'large'} sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
+                                        <Typography sx={{ fontWeight: '600' }} variant='h6'>Customisable Tests</Typography>
                                     </Box>
                                     <Box sx={{ padding: 1 }}>
-                                        <Typography sx={{ color: 'grey' }} variant='subtitle2'>Quiz yourself on all words, those you know, those you don't, or the ones you keep missing.</Typography>
+                                        <Typography sx={{ color: 'grey' }} variant='subtitle1'>Quiz yourself on all words, those you know, those you don't, or the ones you keep missing.</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
@@ -547,11 +606,11 @@ const Banner = () => {
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <Paper sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: 1, padding: 1 }}>
-                                        <CloudUploadOutlined color='error' fontSize='small' sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
-                                        <Typography sx={{ fontWeight: '600' }} variant='subtitle1'>Sync Across Devices</Typography>
+                                        <CloudUploadOutlined color='error' fontSize={'large'} sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
+                                        <Typography sx={{ fontWeight: '600' }} variant='h6'>Sync Across Devices</Typography>
                                     </Box>
                                     <Box sx={{ padding: 1 }}>
-                                        <Typography sx={{ color: 'grey' }} variant='subtitle2'>Quiz sessions can paused and saved securely to the cloud, allowing you to pick up where you left off on any device.</Typography>
+                                        <Typography sx={{ color: 'grey' }} variant='subtitle1'>Progress data saved securely to the cloud, allowing you to continue on any device.</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
@@ -559,11 +618,11 @@ const Banner = () => {
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <Paper sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: 1, padding: 1 }}>
-                                        <InsertChartOutlinedOutlined color='error' fontSize='small' sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
-                                        <Typography sx={{ fontWeight: '600' }} variant='subtitle1'>Results Tracking & Analysis</Typography>
+                                        <MoneyOff color='error' fontSize={'large'} sx={{ border: 1, borderRadius: '16px', px: 0.5, py: 0.2 }} />
+                                        <Typography sx={{ fontWeight: '600' }} variant='h6'>Free to use</Typography>
                                     </Box>
                                     <Box sx={{ padding: 1 }}>
-                                        <Typography sx={{ color: 'grey' }} variant='subtitle2'>Review quiz results, view progression statistics and pinpoint difficult vocabulary items.</Typography>
+                                        <Typography sx={{ color: 'grey' }} variant='subtitle1'>No paid features, no advertisements and no user data collected beyond authentication.</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>

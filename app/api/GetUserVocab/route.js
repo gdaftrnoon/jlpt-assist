@@ -21,10 +21,11 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 export async function GET() {
 
     const session = await auth()
+    const username = session?.user?.username
     const userid = session?.user?.userId
 
-    if (!userid) {
-        return
+    if (!username) {
+        return NextResponse.json({ message: 'Not an authenticated user' }, { status: 429 })
     }
 
     const identifier = userid;
