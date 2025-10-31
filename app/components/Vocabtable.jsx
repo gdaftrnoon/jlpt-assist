@@ -449,6 +449,13 @@ export default function VocabTable() {
                 </Button>
             </Box>
 
+            {(status === 'unauthenticated') &&
+            <Alert sx={{mt:3}} severity="error">
+                Log in to use the vocabulary table
+            </Alert>
+
+            }
+
             <Box sx={{ pt: 3, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <Pagination
                     size={matches ? 'large' : 'medium'}

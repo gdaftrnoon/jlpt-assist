@@ -793,8 +793,8 @@ export default function Test() {
                                         })
                                     )
                                     if (cardNumber < testCards.length - 1) {
-                                        setCardNumber(prev => prev + 1)
                                         toggleShowCard(false)
+                                        setCardNumber(prev => prev + 1)
                                     }
                                 }}
                                 size={matches ? 'large' : 'small'}
@@ -813,8 +813,8 @@ export default function Test() {
                                         })
                                     )
                                     if (cardNumber < testCards.length - 1) {
-                                        setCardNumber(prev => prev + 1)
                                         toggleShowCard(false)
+                                        setCardNumber(prev => prev + 1)
                                     }
                                 }}
                                 size={matches ? 'large' : 'small'}
@@ -833,6 +833,14 @@ export default function Test() {
                         <Alert icon={false} severity='info' sx={{ mb: 1, mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontSize: { xs: '1rem', md: '1.2rem' } }}>
                             Set the test configuration before running.
                         </Alert>
+
+                        {(status === 'unauthenticated') &&
+                            <Alert sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} severity="error" icon={false}>
+                                <Typography>
+                                    Unauthenticated users have limited access to test features.
+                                </Typography>
+                            </Alert>
+                        }
 
                         {(vocab && userKnownWordIds) &&
                             <TableContainer sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2, mb: 2 }}>
