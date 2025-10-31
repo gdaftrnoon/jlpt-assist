@@ -31,7 +31,6 @@ export default function ProfileComponent() {
         const testRecords = await response.json()
         if (testRecords.status === "200") {
             const testResults = testRecords.message
-            console.log('records', testResults)
             setRecords(testResults)
         }
     }
@@ -84,7 +83,6 @@ export default function ProfileComponent() {
                 .then(response => response.json())
                 .then(data => {
                     setUserKnownWordIds(data.message.map(x => x.word_id))
-                    console.log('all user known word ids', data.message.map(x => x.word_id))
                 })
                 .finally(
                     flagB.current = true

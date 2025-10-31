@@ -104,7 +104,6 @@ export default function Test() {
                 .then(response => response.json())
                 .then(data => {
                     setUserKnownWordIds(data.message.map(x => x.word_id))
-                    console.log('all user known word ids', data.message.map(x => x.word_id))
                 })
                 .finally(
                     flagB.current = true
@@ -144,11 +143,8 @@ export default function Test() {
             const correctCards = testCards.filter(x => x.result === true)
             const incorrectCards = testCards.filter(x => x.result === false)
             const toBeCorrect = correctCards.filter(x => !userKnownWordIds.includes(x.id))
-            console.log('tbc', toBeCorrect.length)
             const toBeinCorrect = incorrectCards.filter(x => userKnownWordIds.includes(x.id))
-            console.log('tbi', toBeinCorrect.length)
             setParcel({ setKnown: toBeCorrect, setUnknown: toBeinCorrect })
-            console.log({ setKnown: toBeCorrect, setUnknown: toBeinCorrect })
         }
 
         // detect when test is over
@@ -159,7 +155,6 @@ export default function Test() {
                 }
                 setTestComplete(true)
                 openResultsDia(true)
-                console.log('the test is over')
             }
         }
 
@@ -203,7 +198,6 @@ export default function Test() {
 
                 const willResolve = []
 
-                console.log('FETCH RUN')
 
                 indiv.map(async x => {
                     const response = fetch(`https://kanjiapi.dev/v1/kanji/${x}`).then(res => res.json())
@@ -211,11 +205,9 @@ export default function Test() {
                 })
 
                 const kanji = await Promise.all(willResolve)
-                console.log('new kanji bank', [...kanjiBank, kanji].flatMap(x => x))
                 setKanjiBank(prev => [...prev, kanji].flatMap(x => x)) // add details to the bank
 
                 setKanjiLoading(false)
-                console.log(kanji)
             }
         }
     }
@@ -232,7 +224,6 @@ export default function Test() {
         if (type === 'all') {
             const slicedCards = testCards.slice(0, cardCount)
             setTestCards(slicedCards)
-            console.log('sliced cards', slicedCards)
             setTestOn(true)
         }
 
@@ -240,7 +231,6 @@ export default function Test() {
             const knownCards = testCards.filter(x => ukwidByLevel[level].includes(x.id))
             const slicedCards = knownCards.slice(0, cardCount)
             setTestCards(slicedCards)
-            console.log('sliced cards', slicedCards)
             setTestOn(true)
         }
 
@@ -255,13 +245,11 @@ export default function Test() {
                 setTestCards(concatCards)
                 setFillMsg(`Test partially filled with +${slicedCards.length} cards`)
                 toggleFillNotif(true)
-                console.log('concat cards', concatCards)
                 setTestOn(true)
             }
             else {
                 const slicedCards = unknownCards.slice(0, cardCount)
                 setTestCards(slicedCards)
-                console.log('sliced cards', slicedCards)
                 setTestOn(true)
             }
         }
@@ -309,7 +297,6 @@ export default function Test() {
                         }
                     })
                     const newUserKnownWordIDs = userKnownWordIds.filter(x => !toDelete.includes(x)).concat(toAppend)
-                    console.log('newuserknownwordids', newUserKnownWordIDs)
                     setUserKnownWordIds(newUserKnownWordIDs)
                 }
                 else {

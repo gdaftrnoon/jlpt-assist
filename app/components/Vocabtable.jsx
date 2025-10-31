@@ -47,7 +47,6 @@ export default function VocabTable() {
                 .then(response => response.json())
                 .then(data => {
                     setUserKnownWordIds(data.message.map(x => x.word_id))
-                    console.log('all user known word ids', data.message.map(x => x.word_id))
                 })
                 .finally(
                     flagB.current = true
@@ -62,7 +61,6 @@ export default function VocabTable() {
             vocab[level].slice((page - 1) * 10, ((page - 1) * 10) + 10).map(x => (
                 initial[x.id] = (userKnownWordIds.includes(x.id))
             ))
-            console.log('initial', initial)
             setInitialPackage(initial)
             setAdjustedPackage(initial)
             setLoading(false)
@@ -113,7 +111,6 @@ export default function VocabTable() {
                     }
                 })
                 const newUserKnownWordIDs = userKnownWordIds.filter(x => !toDelete.includes(x)).concat(toAppend)
-                console.log('newuserknownwordids', newUserKnownWordIDs)
                 setUserKnownWordIds(newUserKnownWordIDs)
             }
         }
