@@ -470,7 +470,7 @@ export default function VocabTable() {
                 (vocab && adjustedPackage) ?
                     <Card
                         sx={{
-                            width: { xs: '100%', md: '50%' },
+                            width: { xs: '100%', md: '70%' },
                             mt: 4,
                             borderRadius: '16px',
                             mb: 15
