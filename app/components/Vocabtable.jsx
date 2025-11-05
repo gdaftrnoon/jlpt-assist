@@ -218,7 +218,7 @@ export default function VocabTable() {
                 </DialogTitle>
                 <DialogContent sx={{ pb: 0 }}>
 
-                    <Box>   
+                    <Box sx={{pb:2}}>   
                         <TableContainer sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2, mb: 2 }}>
                             <Table size={!matches && 'small'} sx={{ width: { xs: '100%', md: '35%' }, border: 2 }}>
                                 <TableHead>
