@@ -23,7 +23,13 @@ export default async function RootLayout({ children }) {
     'n5': 33,
   }
 
-  const allData = {}
+  const allData = {
+    n1: [],
+    n2: [],
+    n3: [],
+    n4: [],
+    n5: [],
+  }
 
   await Promise.all(
     Object.keys(fileCount).map(async n => {
