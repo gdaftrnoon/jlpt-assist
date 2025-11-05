@@ -234,7 +234,7 @@ export default function VocabTable() {
                                 </TableHead>
                                 <TableBody>
                                     {Object.keys(vocab).map((x, index) => (
-                                        <TableRow selected={x === level} onClick={() => setLevel(x)} key={index}>
+                                        <TableRow selected={x === level} onClick={() => setLevel(x)} key={x}>
                                             <TableCell sx={{ textAlign: 'center', padding: 1 }}>
                                                 {x.toUpperCase()}
                                             </TableCell>
@@ -257,14 +257,6 @@ export default function VocabTable() {
                         </TableContainer>
                     </Box>
                 </DialogContent>
-
-                <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Button
-                        onClick={() => { toggleIntroDialog(false) }}
-                        sx={{ fontWeight: 'bold' }}>
-                        Close
-                    </Button>
-                </DialogActions>
             </Dialog>
 
             {/* search dialog */}

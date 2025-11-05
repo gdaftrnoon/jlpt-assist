@@ -723,6 +723,7 @@ export default function Test() {
                         </ToggleButtonGroup>
                     </Box>
 
+                    {/* prev next show buttons */}
                     <Collapse timeout={{ enter: 400, exit: 0 }} in={testOn}>
                         {(testOn && testCards) &&
                             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 1, pb: 1.5, pt: 1.5 }}>
@@ -856,7 +857,7 @@ export default function Test() {
                                     </TableHead>
                                     <TableBody>
                                         {Object.keys(vocab).map((x, index) => (
-                                            <TableRow selected={x === level} onClick={() => setLevel(x)} key={index}>
+                                            <TableRow selected={x === level} onClick={() => setLevel(x)} key={x}>
                                                 <TableCell sx={{ textAlign: 'center', padding: 1 }}>
                                                     {x.toUpperCase()}
                                                 </TableCell>
