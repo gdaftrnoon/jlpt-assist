@@ -506,7 +506,7 @@ const Banner = () => {
                     }}>
                     <Box sx={{ mb: 5, width: '100%', textAlign: 'center' }}>
                         <Typography variant={matches ? 'h2' : 'h5'} gutterBottom sx={{}}>Core Features</Typography>
-                        <Typography variant={matches ? 'h4' : 'h5'} gutterBottom sx={{ color: 'grey' }}>Modern features, simple design philosophy</Typography>
+                        <Typography variant={matches ? 'h4' : 'h5'} gutterBottom sx={{ color: 'grey' }}>Modern framework, simple design philosophy</Typography>
                     </Box>
 
                     <Box sx={{ width: { xs: '90%', md: '50%' } }}>
