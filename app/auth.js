@@ -13,7 +13,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [Google],
     callbacks: {
         async jwt({ token, account, profile }) {
-            console.log(token)
 
             if (token?.email && !token.userId) {
                 const { data } = await supabaseServerside
