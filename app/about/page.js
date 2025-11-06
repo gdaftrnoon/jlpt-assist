@@ -82,7 +82,7 @@ export default function AboutPage() {
                         </Typography>
 
                         <Typography gutterBottom variant={matches ? 'subtitle1' : 'subtitle1'}>
-                            <strong>gdaftrnoon@proton.me</strong>
+                            <strong>gdaftrnoon@pm.me</strong>
                         </Typography>
 
                     </CardContent>
