@@ -283,7 +283,7 @@ export default function ProfileComponent() {
 
                                                                 ) * 100
                                                             )}%` :
-                                                        records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0) === 0 ?
+                                                        records.filter(record => record.n_level === level).map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0) === 0 ?
                                                             '0%' :
                                                             `${Math.floor(
                                                                 (
