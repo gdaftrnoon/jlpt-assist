@@ -288,7 +288,7 @@ export default function ProfileComponent() {
                                                             `${Math.floor(
                                                                 (
                                                                     records.filter(record => record.n_level === level).map(x => (x.correct)).flatMap(y => y).reduce((a, b) => a + b, 0) /
-                                                                    records.map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
+                                                                    records.filter(record => record.n_level === level).map(x => (x.correct + x.incorrect)).flatMap(y => y).reduce((a, b) => a + b, 0)
 
                                                                 ) * 100
                                                             )}%`
