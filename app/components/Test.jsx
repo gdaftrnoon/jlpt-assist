@@ -338,9 +338,9 @@ export default function Test() {
         <Container>
 
             {/* kanji dialog */}
-            <Dialog sx={{}} fullWidth={matches ? true : true} maxWidth={matches ? 'xs' : 'xl'} open={kanjiDia} onClose={() => setKanjiDia(false)}>
-                <DialogContent>
-                    <Paper sx={{ mt: 1, borderRadius: '16px', py: 1.5, px: 2, mb: 10 }}>
+            <Dialog sx={{}} fullWidth={true} maxWidth={matches ? 'xs' : 'xl'} open={kanjiDia} onClose={() => setKanjiDia(false)}>
+                <DialogContent sx={{pb:4}}>
+                    <Paper sx={{ mt: 1, borderRadius: '16px', py: 1.5, px: 2 }}>
                         <TableContainer>
                             <Table size="small">
                                 <TableBody>
@@ -350,7 +350,7 @@ export default function Test() {
                                                 <React.Fragment key={index}>
                                                     <TableRow>
                                                         <TableCell sx={{ padding: 0, py: 0.5, textAlign: 'center', width: '100%' }}>
-                                                            <Typography variant="h6">
+                                                            <Typography variant={matches ? 'h4' : 'h6'}>
                                                                 {x.kanji}
                                                             </Typography>
                                                         </TableCell>
@@ -360,13 +360,13 @@ export default function Test() {
                                                         <TableCell colSpan={3} sx={{ padding: 0, py: 1, px: 1 }}>
                                                             <Collapse in={true}>
                                                                 <Box>
-                                                                    <Typography gutterBottom>
+                                                                    <Typography variant={matches ? 'h5' : 'subtitle2'} gutterBottom>
                                                                         <strong>On:</strong> {x.on_readings.map(onR => onR).join(', ')}
                                                                     </Typography>
-                                                                    <Typography gutterBottom>
+                                                                    <Typography variant={matches ? 'h5' : 'subtitle2'} gutterBottom>
                                                                         <strong>Kun:</strong> {x.kun_readings.map(kunR => kunR).join(', ')}
                                                                     </Typography>
-                                                                    <Typography gutterBottom>
+                                                                    <Typography variant={matches ? 'h5' : 'subtitle2'} gutterBottom>
                                                                         {x.meanings.map(meaning => meaning).join(', ')}
                                                                     </Typography>
                                                                 </Box>
@@ -389,9 +389,6 @@ export default function Test() {
                         </TableContainer>
                     </Paper>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setKanjiDia(false)}>Close</Button>
-                </DialogActions>
             </Dialog>
 
             {/* quiz settings */}
