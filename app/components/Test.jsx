@@ -893,7 +893,7 @@ export default function Test() {
 
                 </Box>
 
-                <Collapse timeout={{ enter: 250, exit: 10 }} in={(showCard)}>
+                <Collapse timeout={{ enter: 250, exit: 0 }} in={(showCard)}>
                     {(testCards) &&
                         <Box sx={{ py: 1 }}>
 
